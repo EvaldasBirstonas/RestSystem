@@ -11,8 +11,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
 using RestSystemBackend.DBContext;
-using RestSystemBackend.IdentityAuth;
+using RestSystemBackend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,10 +73,10 @@ namespace RestSystemBackend
             });
 
             // For Identity
-            services.AddIdentity<User, IdentityRole>()
+            /*services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
+            */
             // Adding Authentication
             services.AddAuthentication(options =>
             {

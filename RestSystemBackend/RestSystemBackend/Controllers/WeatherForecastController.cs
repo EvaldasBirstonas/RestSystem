@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RestSystemBackend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
