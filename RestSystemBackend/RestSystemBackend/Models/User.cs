@@ -9,15 +9,16 @@ namespace RestSystemBackend.Models
 {
     public class User
     {
-        [Required, Display(Name = "Id")]
+        [Required]
         public int Id { get; set; }
-        [Required, Display(Name = "Name")]
+        [Required]
         public string Email { get; set; }
-        [Required, Display(Name = "Email")]
+        [Required]
         public string Name { get; set; }
-        [Required, Display(Name = "Password")]
+        [Required]
         [JsonIgnore] public string Password { get; set; }
-        [Display(Name = "Role")]
+        public ICollection<Achievement> Achievement { get; set; }
+        public ICollection<Game> Game  { get; set; }
         public Roles Roles { get; set; }
     }
     [Flags]
