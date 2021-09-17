@@ -103,7 +103,9 @@ namespace RestSystemBackend
                     ValidateAudience = true,
                     ValidAudience = Configuration["JWT:ValidAudience"],
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"]))
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])),
+                    //ClockSkew = TimeSpan.Zero //Makes the cookies not have default 5 min period.
                 };
             });
         }
@@ -123,7 +125,7 @@ namespace RestSystemBackend
             app.UseRouting();
 
             app.UseCors(options => options
-                //.WithOrigins(new[] {"http://localhost:3000"})
+                .WithOrigins(new[] {"http://localhost:3000"})
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
