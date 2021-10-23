@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace RestSystemBackend.Dtos
 {
-    public class GameDto
+    public class EditGameDto
     {
         [Required]
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
+        public bool KeepImage { get; set; }
         public IFormFile Picture { get; set; }
     }
 }

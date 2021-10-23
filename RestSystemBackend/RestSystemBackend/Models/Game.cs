@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RestSystemBackend.Models
@@ -18,5 +18,6 @@ namespace RestSystemBackend.Models
         public string Picture { get; set; }
         [JsonIgnore]
         public ICollection<User> User { get; set; }
+        public ICollection<Level> Level { get; set; }
     }
 }

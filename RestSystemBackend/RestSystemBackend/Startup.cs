@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +42,9 @@ namespace RestSystemBackend
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
             services.AddSwaggerGen(c =>
             {
@@ -113,19 +117,38 @@ namespace RestSystemBackend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestSystemBackend v1"));
+                //app.UseSwagger();
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestSystemBackend v1"));
             }
+            /*
+                app.UseExceptionHandler(c => c.Run(async context =>
+                {
+                    var exception = context.Features
+                        .Get<IExceptionHandlerPathFeature>()
+                        .Error;
+                    var response = new { error = exception.Message };
+                    await context.Response.WriteAsJsonAsync(response);
+                }));
+            */
+            //To use docker swagger this should be outside
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestSystemBackend v1"));
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
+            app.UseMiddleware<ResponseMessageMiddleware>();
+
             app.UseCors(options => options
-                .WithOrigins(new[] {"http://localhost:3000"})
+                .WithOrigins(new[] {"http://localhost:3000", "https://restsystemdep.herokuapp.com" })
+                //.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
@@ -139,6 +162,42 @@ namespace RestSystemBackend
             {
                 endpoints.MapControllers();
             });
+
+        }
+
+        public class ResponseMessageMiddleware
+        {
+            private readonly RequestDelegate _next;
+
+            public ResponseMessageMiddleware(RequestDelegate next)
+            {
+                _next = next;
+            }
+
+            public async Task Invoke(HttpContext httpContext)
+            {
+                // invoke _next to make the next code run before the response sended
+                await _next(httpContext);
+
+                // Make sure the response has not been sent by the controller, 
+                // this ensures that the message we are about to send does not 
+                // suppress messages from the controller with the same status code
+                if (!httpContext.Response.HasStarted)
+                {
+                    switch (httpContext.Response.StatusCode)
+                    {
+                        case 404:
+                            await httpContext.Response.WriteAsJsonAsync(new
+                            {
+                                //Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                                Title = "Provded api does not exist",
+                                Status = 404
+                            });
+
+                            return;
+                    }
+                }
+            }
         }
     }
 }

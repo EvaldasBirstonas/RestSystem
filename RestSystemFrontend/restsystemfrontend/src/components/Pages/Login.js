@@ -2,8 +2,12 @@ import './Login.css';
 import 'bootstrap';
 import React, {useState} from 'react';
 import {Redirect, Link} from 'react-router-dom';
+import { useHistory } from 'react-router';
 
-function Login() {
+const Login = (props) => {
+
+  const history = useHistory();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
@@ -25,12 +29,15 @@ function Login() {
       if (!data.ok) {
         throw Error(data.statusText);
       }
-      return data;
+      return data.json();
     })
     .then((data) => {
       console.log(data);
       setRedirect(true);
-      console.log("success")
+      localStorage.setItem('user', JSON.stringify(data));
+      props.setUser(data);
+      console.log("success");
+      history.push("/");
     })
     .catch((error) => {
       console.log(error);

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -7,12 +9,12 @@ using RestSystemBackend.Dtos;
 using RestSystemBackend.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestSystemBackend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class LevelsController : Controller
     {
@@ -26,44 +28,61 @@ namespace RestSystemBackend.Controllers
             _context = context;
             _configuration = configuration;
         }
-        [HttpGet]
-        [Route("ping")]
-        public IActionResult Ping()
+        [HttpGet("api/Games/{id}/Levels/{id1}")]
+        public IActionResult GetLevel(int id, int id1)
         {
-            return Ok("Ping is working");
+            _logger.LogInformation(id1.ToString());
+            try
+            {
+                if (_context.Games.Find(id) == null)
+                {
+                    return NotFound();
+                }
+                //var level = _context.Levels.Where(x => x.Game.Id == game_id).Where(y => y.Id == level_id).ToList();
+                //var existingLevel = _context.Levels.Include(x => x.Game).Where(x => x.Id == id).FirstOrDefault();
+                return Ok(_context.Levels.Include(x => x.Game).Include(x => x.Achievement).Where(x => x.Id == id1).FirstOrDefault());
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetLevel(int id)
+        [HttpGet("api/Games/{id}/Levels/")]
+        public IActionResult GetAllLevels(int id)
         {
-            _logger.LogInformation(id.ToString());
-
-            //var existingLevel = _context.Levels.Include(x => x.Game).Where(x => x.Id == id).FirstOrDefault();
-            return Ok(_context.Levels.Include(x => x.Game).Where(x => x.Id == id).FirstOrDefault());
+            try
+            {
+                if (_context.Games.Find(id) == null)
+                {
+                    return NotFound();
+                }
+                //var levels = _context.Levels.Where(y => y.Game.Id == game_id).ToList();
+                return Ok(_context.Levels.Include(x => x.Achievement).Where(y => y.Game.Id == id).ToList());
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
-        [HttpGet]
-        public IActionResult GetAllLevels()
-        {
-            return Ok(_context.Levels.Include(x => x.Game).ToList());
-        }
-
-        [HttpPost]
-        public IActionResult Create(LevelCreateDto level)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("api/Games/{id}/Levels/")]
+        public IActionResult Create(int id, [FromForm] LevelCreateDto level)
         {
             _logger.LogInformation(level.ToString());
             try
             {
-                var existingGame = _context.Games.Find(level.Game);
+                var existingGame = _context.Games.Find(id);
                 if(existingGame == null)
                 {
-                    throw new Exception();
+                    return NotFound();
                 }
                 var newLevel = new Level
                 {
                     Name = level.Name,
                     Description = level.Description,
-                    Picture = level.Picture,
+                    Picture = SaveImage(level.Picture),
                     Game = existingGame
                 };
                 _context.Levels.Add(newLevel);
@@ -76,16 +95,24 @@ namespace RestSystemBackend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, LevelEditDto level)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("api/Games/{id}/Levels/{id1}")]
+        public IActionResult Put(int id, int id1, [FromForm] LevelEditDto level)
         {
             _logger.LogInformation(level.ToString());
             try
             {
-                var dbLevel = _context.Levels.Include(x => x.Game).FirstOrDefault(x => x.Id == id);
+                var dbLevel = _context.Levels.Include(x => x.Game).FirstOrDefault(x => x.Id == id1);
+                if(dbLevel == null)
+                {
+                    return NotFound();
+                }
                 dbLevel.Name = level.Name;
                 dbLevel.Description = level.Description;
-                dbLevel.Picture = level.Picture;
+                if (!level.KeepImage)
+                {
+                    dbLevel.Picture = SaveImage(level.Picture);
+                }
                 _context.SaveChanges();
                 return Ok(dbLevel);
             }
@@ -95,12 +122,13 @@ namespace RestSystemBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("api/Games/{id}/Levels/{id1}")]
+        public IActionResult Delete(int id, int id1)
         {
             try
             {
-                _context.Levels.Remove(_context.Levels.Find(id));
+                _context.Levels.Remove(_context.Levels.Find(id1));
                 _context.SaveChanges();
                 return Ok(new
                 {
@@ -111,6 +139,24 @@ namespace RestSystemBackend.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        private string SaveImage(IFormFile imageFile)
+        {
+            if (imageFile == null)
+            {
+                return null;
+            }
+
+            string newFileName = DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", newFileName);
+
+            using (Stream stream = new FileStream(path, FileMode.Create))
+            {
+                imageFile.CopyTo(stream);
+            }
+
+            return newFileName;
         }
     }
 }

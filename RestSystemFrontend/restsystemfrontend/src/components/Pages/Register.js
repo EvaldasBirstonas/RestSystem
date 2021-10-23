@@ -9,10 +9,10 @@ function Register() {
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
 
-    const submit = async (e) => {
+    const submit = (e) => {
         e.preventDefault();
         
-        await fetch('http://localhost:8000/api/Authentication/register', {
+        fetch('http://localhost:8000/api/Authentication/register', {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify( {

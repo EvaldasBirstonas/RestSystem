@@ -1,4 +1,5 @@
-﻿using RestSystemBackend.Models;
+﻿using Microsoft.AspNetCore.Http;
+using RestSystemBackend.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +14,7 @@ namespace RestSystemBackend.Dtos
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
-        public string Picture { get; set; }
-        public int Level { get; set; }
+        public IFormFile Picture { get; set; }
+        public bool KeepImage { get; set; }
     }
 }
