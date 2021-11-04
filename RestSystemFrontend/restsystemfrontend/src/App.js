@@ -22,6 +22,7 @@ function App() {
   const [user, setUser] = useState('');
   const [redirect, setRedirect] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   
   useEffect(() => {
     (
@@ -96,6 +97,7 @@ function App() {
   }
   */
 
+  
   return (
     <div className="App">
       <Router>
@@ -107,15 +109,19 @@ function App() {
           <Route path="/Login" component={() => <Login setUser={setUser}/>} />
           <Route path="/Register" component={Register}/>
           <Route exact path="/Games" component={() => <Games refresh={refresh}/>}/>
-          <Route path="/AddGame" component={() => <AddGame setRefresh={setRefresh} />}/>
-          <Route path="/Games/:id/AddLevel" component={() => <AddLevel setRefresh={setRefresh} />}/>
-          <Route path="/Games/:id/EditGame" component={() => <EditGame setRefresh={setRefresh} />}/>
-          <Route path="/Games/:id/Levels/:id1/AddAchievement" component={() => <AddAchievement setRefresh={setRefresh} />}/>
+          <Route path="/AddGame" component={() => user.roles > 1 ? <AddGame setRefresh={setRefresh} /> : <Redirect to="/" />}/>
+          <Route path="/Games/:id/AddLevel" component={() => user.roles > 1 ? <AddLevel setRefresh={setRefresh} /> : <Redirect to="/" />}/>
+          <Route path="/Games/:id/EditGame" component={() => user.roles > 1 ? <EditGame setRefresh={setRefresh} /> : <Redirect to="/" />}/>
+          <Route path="/Games/:id/Levels/:id1/AddAchievement" component={() => user.roles > 1 ? <AddAchievement setRefresh={setRefresh} /> : <Redirect to="/" />}/>
           <Route exact path="/Games/:id" component={() => <ViewGames user={user} setRefresh={setRefresh}/>}/>
           <Route exact path="/Games/:id/Levels/:id1" component={() => <ViewLevel user={user} setRefresh={setRefresh}/>}/>
-          <Route exact path="/Games/:id/Levels/:id1/EditLevel" component={() => <EditLevel user={user} setRefresh={setRefresh}/>}/>
+          <Route exact path="/Games/:id/Levels/:id1/EditLevel" component={() => user.roles > 1 ? <EditLevel user={user} setRefresh={setRefresh}/> : <Redirect to="/" />}/>
           <Route exact path="/Games/:id/Levels/:id1/Achievements/:id2" component={() => <ViewAchievement user={user} setRefresh={setRefresh}/>}/>
-          <Route exact path="/Games/:id/Levels/:id1/Achievements/:id2/EditAchievement" component={() => <EditAchievement user={user} setRefresh={setRefresh}/>}/>
+          <Route exact path="/Games/:id/Levels/:id1/Achievements/:id2/EditAchievement" component={() => user.roles > 1 ? <EditAchievement user={user} setRefresh={setRefresh}/> : <Redirect to="/" />}/>
+          <Route>
+            {/* If no other path is found, the route redirects to home component */}
+            <Redirect to="/" />
+          </Route>
         </Switch>
         <Footer />
       </Router>

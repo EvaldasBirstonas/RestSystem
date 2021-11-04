@@ -1,7 +1,7 @@
 import 'bootstrap';
 import React, {useEffect, useState} from 'react';
 import CardsList from '../CardsList';
-import './Cards.css'
+import './Page.css'
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
 import Container from 'react-bootstrap/Container';
@@ -68,12 +68,12 @@ function Games(props) {
     const cardsArray = slicedGames.map((game, index) => (
         <Row key={index}>
             {game.map(gameElement => (
-                <Col md={3} key={gameElement.id}>
-                    <Card style={{maxHeight: "500px", minHeight: "500px"}} className="m-2" key={gameElement.id}>
-                        <Card.Img style={{maxHeight: "288px", minHeight: "288px"}} variant="top" src={!gameElement.picture ? "../logo192.png" : "http://localhost:8000/images/" + gameElement.picture}/>
+                <Col className="cardContainer" md={3} key={gameElement.id}>
+                    <Card key={gameElement.id}>
+                        <Card.Img variant="top" src={!gameElement.picture ? "../logo192.png" : "http://localhost:8000/images/" + gameElement.picture}/>
                         <Card.Body>
                             <Card.Title>{gameElement.name}</Card.Title>
-                            <Card.Text class="overflow">{gameElement.description}</Card.Text>
+                            <Card.Text>{gameElement.description}</Card.Text>
                             <Button variant="primary" onClick={() => routeChange(gameElement.id)}>Explore</Button>
                         </Card.Body>
                     </Card>

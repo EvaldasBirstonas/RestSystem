@@ -1,8 +1,10 @@
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './NavBar.css';
 import {Link, Redirect} from "react-router-dom";
 import React, {useState} from 'react';
+import { NavDropdown } from 'react-bootstrap';
 
 const NavBar = (props) => {
 
@@ -43,20 +45,28 @@ const NavBar = (props) => {
         console.log(props.user)
         return (
             <Navbar bg="dark" variant="dark" expand="lg">
-                <Link className="navbar-brand" to="/">
-                    <img style={{margin: '5px'}} src="http://localhost:8000/images/icons8-contacts_40px.svg"/>
-                    <a>{props.user.name}</a>
-                </Link>
-                <Link className="navbar-brand" to="/Games">
-                    <img style={{margin: '5px'}} src="http://localhost:8000/images/controller.svg"/>
-                    <a>Games</a> 
-                </Link>
-                {props.user.roles > 1 ? 
-                <Link className="navbar-brand" to="/AddGame"> 
-                    <img style={{margin: '5px'}} src="http://localhost:8000/images/icons8-edit_40px.svg"/>
-                    <a>Add Game</a> 
-                </Link> 
-                : ""}
+                <NavDropdown title={<img src="http://localhost:8000/images/hamburger_40x40.svg" />} id="collapsible-nav-dropdown">
+                    <NavDropdown.Item>
+                        <Link className="navbar-brand" to="/">
+                            <img src="http://localhost:8000/images/icons8-contacts_40px.svg"/>
+                            <a>{props.user.name}</a>
+                        </Link>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                        <Link className="navbar-brand" to="/Games">
+                            <img src="http://localhost:8000/images/controller.svg"/>
+                            <a>Games</a> 
+                        </Link>
+                    </NavDropdown.Item>
+                    {props.user.roles > 1 ? 
+                    <NavDropdown.Item>
+                        <Link className="navbar-brand" to="/AddGame"> 
+                            <img src="http://localhost:8000/images/icons8-edit_40px.svg"/>
+                            <a>Add Game</a> 
+                        </Link>
+                    </NavDropdown.Item>
+                    : ""}
+                </NavDropdown>
                 <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                     <Nav className="mr-auto">
                         <Link className="nav-link" to="/">

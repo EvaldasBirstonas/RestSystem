@@ -21,9 +21,9 @@ const ViewGames = (props) => {
     const [game, setGame] = useState();
     const [show, setShow] = useState(false);
     const [toastShow, setToastShow] = useState(false);
+    const [failToastShow, setFailToastShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleToastClose = () => setToastShow(false);
 
     const handleDelete = () => {
         fetch('http://localhost:8000/api/Games/' + game.id, {
@@ -67,8 +67,16 @@ const ViewGames = (props) => {
             credentials: 'include',
         })
         .then((data) => {
-            handleToastShow();
+            if(data.ok) {
+                handleToastShow();
+            }
+            else {
+                throw new Error(data);
+            }
         })
+        .catch((error) => {
+            setFailToastShow(true);
+        });
     }
 
     useEffect(() => {
@@ -111,42 +119,52 @@ const ViewGames = (props) => {
         if (game) {
             return (
                 <div>
-                    <div style={{ padding: "10%" }}>
+                    <div className="paddedDiv">
                         <Card>
-                        <Card.Img variant="top" src={!game.picture ? "../logo192.png" : "http://localhost:8000/images/" + game.picture} style={{maxHeight: "30vw"}}/>
+                        <Card.Img variant="top" src={!game.picture ? "../logo192.png" : "http://localhost:8000/images/" + game.picture} style={{height: '100%'}}/>
                             <Card.Body>
                                 <Card.Title>Game #{game.id}</Card.Title>
                                 <Card.Title>Game Name:</Card.Title>
                                 <Card.Text>{game.name}</Card.Text>
                                 <Card.Title>Game Description:</Card.Title>
-                                <Card.Text>{game.description}</Card.Text>
+                                <Card.Text className="no-overflow">{game.description}</Card.Text>
                             </Card.Body>
                         </Card>
                     </div>
                     {props.user ?
-                    <Container fluid>
-                        <Row>
-                            <h1>User settings</h1>
-                            <Button variant="success" onClick={() => handleAddGameToUser()}>Add this game to your account!</Button>
-                            <Alert variant="success" show={toastShow} onHide={handleToastClose}>
-                                <Alert.Heading>Success!</Alert.Heading>
-                                <p>
-                                    {game.name} has been succesfully added to your account
-                                </p>
-                            </Alert>
-                        </Row>
-                    </Container>
+                    <div className="paddedDiv">
+                        <Container fluid>
+                            <Row>
+                                <h1>User settings</h1>
+                                <Button variant="success" onClick={() => handleAddGameToUser()}>Add this game to your account!</Button>
+                                <Alert variant="success" show={toastShow}>
+                                    <Alert.Heading>Success!</Alert.Heading>
+                                    <p>
+                                        {game.name} has been succesfully added to your account
+                                    </p>
+                                </Alert>
+                                <Alert variant="danger" show={failToastShow}>
+                                    <Alert.Heading>There was an error with your request!</Alert.Heading>
+                                    <p>
+                                        The game is most likely already in your games list.
+                                    </p>
+                                </Alert>
+                            </Row>
+                        </Container>
+                    </div>
                     : ""}
 
                     {props.user.roles > 1 ?
-                    <Container fluid>
-                        <Row>
-                            <h1>Admin settings</h1>
-                            <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
-                            <Button variant="warning" onClick={() => handleEditGame()}>Edit game</Button>
-                            <Button variant="success" onClick={() => handleAddLevel()}>Add level</Button>
-                        </Row>
-                    </Container>
+                    <div className="paddedDiv">
+                        <Container fluid>
+                            <Row>
+                                <h1>Admin settings</h1>
+                                <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
+                                <Button variant="warning" onClick={() => handleEditGame()}>Edit game</Button>
+                                <Button variant="success" onClick={() => handleAddLevel()}>Add level</Button>
+                            </Row>
+                        </Container>
+                    </div>
                     : ""}
 
                     <h1>Levels for the game</h1>

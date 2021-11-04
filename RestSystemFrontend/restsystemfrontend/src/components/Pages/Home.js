@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button'
 import { useHistory } from 'react-router';
 import Fade from 'react-bootstrap/Fade';
 import './Home.css'
+import './Page.css'
 
 function Home(props) {
   const [games, setGames] = useState([]);
@@ -34,7 +35,7 @@ function Home(props) {
         return data.json();
       })
       .then((data) => {
-        setGames([data.slice(0, 4)]);
+        setGames([data.slice(-4)]);
         console.log("success")
       })
       .catch((error) => {
@@ -58,7 +59,7 @@ function Home(props) {
         return data.json();
       })
       .then((data) => {
-        setConnectedGames([data.slice(0, 4)]);
+        setConnectedGames([data.slice(-4)]);
         console.log("success")
       })
       .catch((error) => {
@@ -82,7 +83,7 @@ function Home(props) {
         return data.json();
       })
       .then((data) => {
-        setConnectedAchievements([data.slice(0, 4)]);
+        setConnectedAchievements([data.slice(-4)]);
         console.log("success")
       })
       .catch((error) => {
@@ -114,8 +115,8 @@ function Home(props) {
     return(games.map((game, index) => (
       <Row key={index}>
           {game.map(gameElement => (
-              <Col md={3} key={gameElement.id} className="cardDeck">
-                  <Card className="card m-2" key={gameElement.id}>
+              <Col className="cardContainer" md={3} key={gameElement.id}>
+                  <Card key={gameElement.id}>
                       <Card.Img variant="top" src={!gameElement.picture ? "http://localhost:8000/images/default.png" : "http://localhost:8000/images/" + gameElement.picture}/>
                       <Card.Body>
                           <Card.Title>{gameElement.name}</Card.Title>
@@ -153,24 +154,30 @@ function Home(props) {
   return (
     <div className="Home">
         <h1>Hello and welcome to the Home page</h1>
-        <h1>Here are some games for you to check out:</h1>
-        <CardGroup>
-            <Container>
-                {generateCardsArray(games, 'game')}
-            </Container>
-        </CardGroup>
-        <h1>Here are some of the games you have connected!:</h1>
-        <CardGroup>
-            <Container>
-              {connectedGames.length > 0 ? generateCardsArray(connectedGames, 'game') : <h1>Explore some games to connect to your account!</h1>}
-            </Container>
-        </CardGroup>
-        <h1>Here are some of the achievements you have connected!:</h1>
-        <CardGroup>
-            <Container>
-              {connectedAchievements.length > 0 ? generateCardsArray(connectedAchievements) : <h1>Explore your games and connect some achievements!</h1>}
-            </Container>
-        </CardGroup>
+        <div>
+          <h2>Here are some games for you to check out:</h2>
+          <CardGroup>
+              <Container>
+                  {generateCardsArray(games, 'game')}
+              </Container>
+          </CardGroup>
+        </div>
+        <div>
+          <h2>Here are some of the games that you have connected!:</h2>
+          <CardGroup>
+              <Container>
+                {connectedGames.length > 0 ? generateCardsArray(connectedGames, 'game') : <h3 className="margined-text">Explore some games to connect to your account!</h3>}
+              </Container>
+          </CardGroup>
+        </div>
+        <div>
+          <h2>Here are some of the achievements that you have connected!:</h2>
+          <CardGroup>
+              <Container>
+                {connectedAchievements.length > 0 ? generateCardsArray(connectedAchievements) : <h3 className="margined-text">Explore your games and connect some achievements!</h3>}
+              </Container>
+          </CardGroup>
+        </div>
     </div>
   );
 }

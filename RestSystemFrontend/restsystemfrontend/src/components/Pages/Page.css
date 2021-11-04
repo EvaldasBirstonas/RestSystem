@@ -1,0 +1,121 @@
+.Home {
+    min-height: 100vh;
+}
+
+.Games {
+    min-height: 100vh;
+}
+
+h1 {
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    text-align: center;
+}
+
+h2 {
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    text-align: center;
+}
+
+h3 {
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    text-align: center; 
+}
+
+.margined-text {
+    margin-bottom: 5%;
+}
+
+.keep-picture-width {
+    max-width: -webkit-fill-available;
+}
+
+.cardDeck {
+    display: flex;
+    flex-direction: row;
+    border-color: black;
+}
+
+.card-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+p.card-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.no-overflow {
+    white-space: normal !important;
+}
+
+.card-body {
+    height: 100%;
+}
+
+.cardContainer {
+    height: 100%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.card {
+    flex: 1;
+    height: 100%;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 17vw;
+    object-fit: cover;
+}
+
+.paddedDiv {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 5%;
+}
+
+.borderedDiv {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: grey;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 0px) {
+    .card-img-top {
+        height: 100vw;
+    }
+}
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .card-img-top {
+        height: 70vw;
+    }
+}
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .card-img-top {
+        height: 16vw;
+    }
+}
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .card-img-top {
+        height: 18vw;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .card-img-top {
+        height: 12vw;
+    }
+}

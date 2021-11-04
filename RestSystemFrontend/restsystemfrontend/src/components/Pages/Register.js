@@ -1,5 +1,6 @@
 import './Login.css';
 import 'bootstrap';
+import Alert from 'react-bootstrap/Alert'
 import React, {useState} from 'react';
 import {Redirect} from 'react-router-dom';
 
@@ -8,6 +9,7 @@ function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
+    const [show, setShow] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
@@ -20,9 +22,22 @@ function Register() {
                 email,
                 password
             })
+        })
+        .then((data) => {
+            console.log(data);
+            if (data.ok) {
+                setRedirect(true);
+            }
+            else {
+                throw new Error(data);
+            }
+            //return data.json();
+        })
+        .catch((error) => {
+            setShow(true);
         });
 
-        setRedirect(true);
+        //setRedirect(true);
         //const content = await response.json();
         //console.log(content);
     }
@@ -53,6 +68,12 @@ function Register() {
                     <label htmlFor="floatingPassword">Password</label>
                 </div>
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+                <Alert variant="danger" show={show} style={{marginTop: "5%"}}>
+                    <Alert.Heading>An error has occured!</Alert.Heading>
+                    <p>
+                        There was an error with your register form. Please try another email.
+                    </p>
+                </Alert>
             </form>
         </main>
         </div>

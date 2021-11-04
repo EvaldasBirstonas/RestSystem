@@ -98,27 +98,29 @@ const ViewLevel = (props) => {
         if (level) {
             return (
                 <div>
-                    <div style={{ padding: "10%" }}>
+                    <div className="paddedDiv">
                         <Card>
-                        <Card.Img variant="top" src={!level.picture ? "http://localhost:8000/images/default.png" : "http://localhost:8000/images/" + level.picture} style={{maxHeight: "30vw"}}/>
+                        <Card.Img variant="top" src={!level.picture ? "http://localhost:8000/images/default.png" : "http://localhost:8000/images/" + level.picture} style={{height: '100%'}}/>
                             <Card.Body>
                                 <Card.Title>Level #{level.id}</Card.Title>
                                 <Card.Title>Level Name:</Card.Title>
                                 <Card.Text>{level.name}</Card.Text>
                                 <Card.Title>Level Description:</Card.Title>
-                                <Card.Text>{level.description}</Card.Text>
+                                <Card.Text className="no-overflow">{level.description}</Card.Text>
                             </Card.Body>
                         </Card>
                     </div>
                     {props.user.roles > 1 ?
-                    <Container fluid>
-                        <Row>
-                            <h1>Admin settings</h1>
-                            <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
-                            <Button variant="warning" onClick={() => handleEditLevel()}>Edit level</Button>
-                            <Button variant="success" onClick={() => handleAddAchievement()}>Add achievement</Button>
-                        </Row>
-                    </Container>
+                    <div className="paddedDiv">
+                        <Container fluid>
+                            <Row>
+                                <h1>Admin settings</h1>
+                                <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
+                                <Button variant="warning" onClick={() => handleEditLevel()}>Edit level</Button>
+                                <Button variant="success" onClick={() => handleAddAchievement()}>Add achievement</Button>
+                            </Row>
+                        </Container>
+                    </div>
                     : ""}
 
                     <h1>Achievements for the game</h1>

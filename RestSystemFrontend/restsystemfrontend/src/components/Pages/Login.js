@@ -1,5 +1,6 @@
 import './Login.css';
 import 'bootstrap';
+import Alert from 'react-bootstrap/Alert';
 import React, {useState} from 'react';
 import {Redirect, Link} from 'react-router-dom';
 import { useHistory } from 'react-router';
@@ -11,6 +12,7 @@ const Login = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [show, setShow] = useState(false);
 
   const submit = (e) => {
     e.preventDefault();
@@ -42,6 +44,7 @@ const Login = (props) => {
     .catch((error) => {
       console.log(error);
       console.log("error");
+      setShow(true);
     });
   }
 
@@ -71,6 +74,14 @@ const Login = (props) => {
               <input type="checkbox" value="remember-me"/> Remember me
             </label>
           </div>
+
+          <Alert variant="danger" show={show} style={{marginTop: "5%"}}>
+              <Alert.Heading>An error has occured!</Alert.Heading>
+              <p>
+                  There was an error with your login form. Your email or password might be incorrect.
+              </p>
+          </Alert>
+
           <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
           <p>Don't have an Account? <Link to="/Register"> Register here!</Link></p>
           <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p>

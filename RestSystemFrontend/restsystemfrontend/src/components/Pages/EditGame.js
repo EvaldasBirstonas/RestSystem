@@ -90,8 +90,8 @@ function EditGame(props) {
                             
                             <Form.Text>Current picture:
                                 <br />
-                                {game.picture !== null ? <img src={"http://localhost:8000/images/" + game.picture} /> : <a>None</a>}
                             </Form.Text>
+                            {game.picture !== null ? <img className="keep-picture-width" src={"http://localhost:8000/images/" + game.picture} /> : <a>None</a>}
                         </Form.Group>
 
                         <Button variant="primary" onClick={submit}>

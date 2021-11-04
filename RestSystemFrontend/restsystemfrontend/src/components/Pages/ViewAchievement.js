@@ -21,6 +21,7 @@ const ViewAchievement = (props) => {
     const [achievement, setAchievement] = useState();
     const [show, setShow] = useState(false);
     const [toastShow, setToastShow] = useState(false);
+    const [failToastShow, setFailToastShow] = useState(false);
 
     console.log(id)
     console.log(id1)
@@ -34,7 +35,7 @@ const ViewAchievement = (props) => {
         .then((data) => {
             console.log(data);
             if (data.ok) {
-                history.push('/Games/' + id + 'Levels/' + id1)
+                history.push('/Games/' + id + '/Levels/' + id1)
                 props.setRefresh(x => !x);
             }
             return data.json();
@@ -101,48 +102,66 @@ const ViewAchievement = (props) => {
                 credentials: 'include',
             })
             .then((data) => {
-                handleToastShow();
+                if(data.ok) {
+                    handleToastShow();
+                }
+                else {
+                    throw new Error(data);
+                }
             })
+            .catch((error) => {
+                setFailToastShow(true);
+            });
         }
 
         if (achievement) {
             return (
                 <div>
-                    <div style={{ padding: "10%" }}>
+                    <div className="paddedDiv">
                         <Card>
-                        <Card.Img variant="top" src={!achievement.picture ? "http://localhost:8000/images/default.png" : "http://localhost:8000/images/" + achievement.picture} style={{maxHeight: "30vw"}}/>
+                        <Card.Img variant="top" src={!achievement.picture ? "http://localhost:8000/images/default.png" : "http://localhost:8000/images/" + achievement.picture} style={{height: '100%'}}/>
                             <Card.Body>
                                 <Card.Title>Achievement #{achievement.id}</Card.Title>
                                 <Card.Title>Achievement Name:</Card.Title>
                                 <Card.Text>{achievement.name}</Card.Text>
                                 <Card.Title>Achievement Description:</Card.Title>
-                                <Card.Text>{achievement.description}</Card.Text>
+                                <Card.Text className="no-overflow">{achievement.description}</Card.Text>
                             </Card.Body>
                         </Card>
                     </div>
                     {props.user ?
-                    <Container fluid>
-                        <Row>
-                            <h1>User settings</h1>
-                            <Button variant="success" onClick={() => handleAddAchievementToUser()}>Add this achievement to your account!</Button>
-                            <Alert variant="success" show={toastShow} onHide={handleToastClose}>
-                                <Alert.Heading>Success!</Alert.Heading>
-                                <p>
-                                    {achievement.name} has been succesfully added to your account
-                                </p>
-                            </Alert>
-                        </Row>
-                    </Container>
+                    <div className="paddedDiv">
+                        <Container fluid>
+                            <Row>
+                                <h1>User settings</h1>
+                                <Button variant="success" onClick={() => handleAddAchievementToUser()}>Add this achievement to your account!</Button>
+                                <Alert variant="success" show={toastShow} onHide={handleToastClose}>
+                                    <Alert.Heading>Success!</Alert.Heading>
+                                    <p>
+                                        {achievement.name} has been succesfully added to your account
+                                    </p>
+                                </Alert>
+                                <Alert variant="danger" show={failToastShow}>
+                                    <Alert.Heading>There was an error with your request!</Alert.Heading>
+                                    <p>
+                                        The achievement is most likely already in your games list.
+                                    </p>
+                                </Alert>
+                            </Row>
+                        </Container>
+                    </div>
                     : ""}
 
                     {props.user.roles > 1 ?
-                    <Container fluid>
-                        <Row>
-                            <h1>Admin settings</h1>
-                            <Button variant="warning" onClick={() => handleEditAchievement()}>Edit achievement</Button>
-                            <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
-                        </Row>
-                    </Container>
+                    <div className="paddedDiv">
+                        <Container fluid>
+                            <Row>
+                                <h1>Admin settings</h1>
+                                <Button variant="warning" onClick={() => handleEditAchievement()}>Edit achievement</Button>
+                                <Button variant="danger" onClick={() => handleShow()}>Delete</Button>
+                            </Row>
+                        </Container>
+                    </div>
                     : ""}
 
                     <Modal show={show} onHide={handleClose} animation="false">

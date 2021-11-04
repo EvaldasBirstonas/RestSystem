@@ -1,0 +1,27 @@
+
+.navbar-brand {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.navbar-brand a {
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
+
+.navbar-brand img {
+    filter: invert(0.9);
+    margin-right: 2%;
+}
+
+.dropdown-menu {
+    background-color: #212529
+}
+
+#collapsible-nav-dropdown::after{
+    display: none; 
+ }
+
+ #collapsible-nav-dropdown img{
+    filter: invert(1); 
+ }
