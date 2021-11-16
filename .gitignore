@@ -351,3 +351,4 @@ MigrationBackup/
 
 # WWWRoot icons
 **/wwwroot/images
+RestSystemBackend/RestSystemBackend/appsettings.json
